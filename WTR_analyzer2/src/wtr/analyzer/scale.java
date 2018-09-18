@@ -65,7 +65,7 @@ public class scale {
     }
           
        
-    public void computeRnS(){
+    public void computeRnS(){ //compute ratios and switchpoints from questions
         for(question q:questions){
             ratios.add(q.ratio);
         }
@@ -81,7 +81,7 @@ public class scale {
         System.out.println(switchpoints.get(switchpoints.size()-1));
         }
     
-    public void computeWTRv2(){
+    public void computeWTRv2(){  //compute WTR and consistency metrics
         ConsOfSP = new ArrayList();
         MaxConsSPs = new ArrayList();
         
