@@ -16,6 +16,7 @@ public class Subject {
     String SubNum;
     ArrayList<scale> scales;
    
+    //added a comment
     
     //constructor
     
