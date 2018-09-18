@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 package wtr.analyzer;
-
+//here is a comment that should produce a conflicting change
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
