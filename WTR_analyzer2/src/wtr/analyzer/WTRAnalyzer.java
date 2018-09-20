@@ -432,7 +432,7 @@ public class Go {
                     String subdata = "";
                     Subject sub = subList.get(i);
                     subdata = sub.SubNum;
-                    System.out.println(sub.SubNum);
+                    //System.out.println(sub.SubNum);
                     for(int j=0; j<sub.scales.size(); j++){
                         scale thisScale=sub.scales.get(j);
                         subdata+=","+thisScale.label+",";
