@@ -284,24 +284,39 @@ public class Go {
                         numChoices=Integer.parseInt(header.get(3).get(1));
                         ArrayList<question> qs = new ArrayList();
                         System.out.println("Scale has " + numChoices+ " choices");
-                        for(int k=1; k<numChoices+1; k++){
-                            System.out.println("Choice " + k);
-                            String thisC, thisp1p1, thisp1p2, thisp2p1, thisp2p2;
-                            thisC=header.get(4).get(k);
-                            thisp1p1=header.get(5).get(k);
-                            thisp1p2=header.get(6).get(k);
-                            thisp2p1=header.get(7).get(k);
-                            thisp2p2=header.get(8).get(k);
-                            question thisQ = new question(Integer.parseInt(thisC), Double.parseDouble(thisp1p1), Double.parseDouble(thisp1p2), Double.parseDouble(thisp2p1), Double.parseDouble(thisp2p2));
-                            qs.add(thisQ);
+                        try{
+                            for(int k=1; k<numChoices+1; k++){
+                                System.out.println("Choice " + k);
+                                String thisC, thisp1p1, thisp1p2, thisp2p1, thisp2p2;
+                                thisC=header.get(4).get(k);
+                                thisp1p1=header.get(5).get(k);
+                                thisp1p2=header.get(6).get(k);
+                                thisp2p1=header.get(7).get(k);
+                                thisp2p2=header.get(8).get(k);
+                                question thisQ = new question(Integer.parseInt(thisC), Double.parseDouble(thisp1p1), Double.parseDouble(thisp1p2), Double.parseDouble(thisp2p1), Double.parseDouble(thisp2p2));
+                                qs.add(thisQ);
+                            }
+                            
+                            //assemble scale and add to list of scales in datafile
+                            System.out.println("Ready to make a scale");
+                            scale thisScale = new scale(p1, p2, label, numChoices, qs);
+                            System.out.println("Scale label: "+thisScale.label + ", P1: " + thisScale.P1+ ", P2: " + thisScale.P2+ ", Choices: " + thisScale.questions.size());
+                            if(thisScale.checkScale()){
+                                theScales.add(thisScale);
+                            }else{
+                                System.out.println("This scale was rejected");
+                            }
+                        }
+                        catch(Exception e)
+                        {
+                            qs = null;
+                            System.out.println(e);
                         }
                         
-                        //assemble scale and add to list of scales in datafile
-                        System.out.println("Ready to make a scale");
-                        scale thisScale = new scale(p1, p2, label, numChoices, qs);
-                        System.out.println("Scale label: "+thisScale.label + ", P1: " + thisScale.P1+ ", P2: " + thisScale.P2+ ", Choices: " + thisScale.questions.size());
-                        theScales.add(thisScale);
-                        System.out.println(theScales.size() + " scale(s) processed so far");
+                        
+                        
+                        
+                        System.out.println(theScales.size() + " correctly formatted scale(s) processed so far");
                         
                         //clean out that scale
                         for(int k=0; k<numChoices+1; k++){

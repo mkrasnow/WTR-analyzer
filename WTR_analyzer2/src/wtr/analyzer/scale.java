@@ -63,6 +63,22 @@ public class scale {
         computeWTRv2();
         System.out.println(subnum + ":" + label + ", switchpoints size: " + switchpoints.size());
     }
+    
+    public boolean checkScale(){
+        if((P1 != null) && (P2 != null) && (label != null) && /*(numChoices != null) &&*/ (questions != null) && (choices != null) && (switchpoints != null) && (ratios != null)){
+            try{
+                for (question q : questions)
+                    if (q.checkNull())
+                        return false;
+            }
+            catch(IllegalAccessException e)
+            {
+                System.out.println(e);
+            }
+        }
+        
+        return true;
+    }
           
        
     public void computeRnS(){ //compute ratios and switchpoints from questions
