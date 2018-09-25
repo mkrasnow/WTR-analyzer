@@ -152,20 +152,25 @@ public class scale {
             numIncChoices=0;
             for(int i=0; i<ratios.size(); i++){
                 if(choices.get(i)==1){
-                    if(ratios.get(i)>WTR){
+                    if(ratios.get(i)>=WTR){
+                        System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = CONS");
                     } else {
                         numIncChoices++;
                         WTRError+=Math.abs(ratios.get(i)-WTR);
+                        System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = INC");
                     }
                 } else {
-                    if(ratios.get(i)<WTR){
+                    if(ratios.get(i)<=WTR){
+                        System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = CONS");
                     } else {
                         numIncChoices++;
                         WTRError+=Math.abs(ratios.get(i)-WTR);
+                        System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = INC");
                     }
                 }
             }
         }
+        System.out.println("numChoices: " + numChoices + ", numIncChoices: " + numIncChoices);
         Consistency=(double)(numChoices-numIncChoices)/(double)numChoices;
         System.out.println("Computed WTR="+WTR+", Consistency="+Consistency+", WTRerror="+WTRError);
     }
