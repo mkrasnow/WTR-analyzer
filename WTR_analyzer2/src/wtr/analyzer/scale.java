@@ -22,12 +22,16 @@ public class scale {
     double WTRError;
     int numChoices;
     int numIncChoices;
+    double maxConsistency;
+    double SPrange;
+    double SPrankRange;
     
     ArrayList<Integer> choices;
     ArrayList<Double> switchpoints;
     ArrayList<Double> ratios;
     ArrayList<Integer> ConsOfSP;
     ArrayList<Double> MaxConsSPs;
+    ArrayList<Integer>MaxConsSPRanks;
     
     public scale(){
         choices = new ArrayList();
@@ -84,6 +88,7 @@ public class scale {
     public void computeWTRv2(){  //compute WTR and consistency metrics
         ConsOfSP = new ArrayList();
         MaxConsSPs = new ArrayList();
+        MaxConsSPRanks = new ArrayList();
         
         //calculate consistency of all possible switchpoints
         for(int i=0; i<switchpoints.size(); i++){
@@ -118,13 +123,17 @@ public class scale {
         
         //find highest consistency switchpoints and calculate WTR
         int MaxC = Collections.max(ConsOfSP);
+        maxConsistency = (double)MaxC/(double)choices.size();
         double TempWTR=0;
         for(int i=0; i<ConsOfSP.size(); i++){
             if(ConsOfSP.get(i)==MaxC){
                 MaxConsSPs.add(switchpoints.get(i));
+                MaxConsSPRanks.add(i);
                 TempWTR+=switchpoints.get(i);
             }
         }
+        SPrange=Collections.max(MaxConsSPs)-Collections.min(MaxConsSPs);
+        SPrankRange=Collections.max(MaxConsSPRanks)-Collections.min(MaxConsSPRanks);
         WTR=(double)TempWTR/(double)MaxConsSPs.size();
         //Consistency=(double)MaxC/(double)ratios.size();
         

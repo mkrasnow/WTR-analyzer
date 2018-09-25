@@ -416,14 +416,17 @@ public class Go {
                 writer.write("Subject");
                 for(int i=0; i<subList.get(0).scales.size(); i++){
                     scale thisScale = subList.get(0).scales.get(i);
-                    writer.write(",Scale Label,Player 1:Player 2,Scale Length,");
+                    writer.write(",Scale_Label,Player_1-Player_2,Scale_Length,");
                     for (int j=0; j<thisScale.ratios.size(); j++){
-                        writer.write("Ratio " + j+",");
+                        writer.write("Ratio_" + j+",");
                     }
                     for (int j=0; j<thisScale.switchpoints.size(); j++){
-                        writer.write("SwitchPoint " + j+",");
+                        writer.write("SwitchPoint_" + j+",");
                     }
-                    writer.write("WTR,# Avgd SPs,Avgd SPs,# Inconsistent,Consistency,WTRerror");
+                    for (int j=0; j<thisScale.choices.size(); j++){
+                        writer.write("Choice_" + j+",");
+                    }
+                    writer.write("Num_Avgd_SPs,Max_SP_Consistency,Avgd_SPs,Avgd_SP_range,Avgd_SP_rankRange,Num_Inconsistent,Consistency,WTRerror,WTR");
                 }
                 writer.write("\n");
                 // output each person's data
@@ -444,16 +447,19 @@ public class Go {
                         for (int k=0; k<thisScale.switchpoints.size(); k++){
                             subdata+=thisScale.switchpoints.get(k)+",";
                         }
-                        subdata+=thisScale.WTR+",";
                         subdata+=thisScale.MaxConsSPs.size()+",";
+                        subdata+=thisScale.maxConsistency+",";
                         String sps="";
                         for (int k=0; k<thisScale.MaxConsSPs.size(); k++){
                             sps+=thisScale.MaxConsSPs.get(k)+";";
                         }
                         subdata+=sps.substring(0, sps.length()-2)+",";
+                        subdata+=thisScale.SPrange+",";
+                        subdata+=thisScale.SPrankRange+",";
                         subdata+=thisScale.numIncChoices+",";
                         subdata+=thisScale.Consistency+",";
-                        subdata+=thisScale.WTRError;
+                        subdata+=thisScale.WTRError+",";
+                        subdata+=thisScale.WTR;
                         
                     }
                     System.out.println(subdata);
