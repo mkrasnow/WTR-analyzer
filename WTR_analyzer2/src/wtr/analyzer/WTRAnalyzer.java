@@ -507,8 +507,4 @@ public class Go {
                     
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> master
