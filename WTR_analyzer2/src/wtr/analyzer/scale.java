@@ -67,6 +67,22 @@ public class scale {
         computeWTRv2();
         System.out.println(subnum + ":" + label + ", switchpoints size: " + switchpoints.size());
     }
+    
+    public boolean checkScale(){
+        if((P1 != null) && (P2 != null) && (label != null) && /*(numChoices != null) &&*/ (questions != null) && (choices != null) && (switchpoints != null) && (ratios != null)){
+            try{
+                for (question q : questions)
+                    if (q.checkNull())
+                        return false;
+            }
+            catch(IllegalAccessException e)
+            {
+                System.out.println(e);
+            }
+        }
+        
+        return true;
+    }
           
        
     public void computeRnS(){ //compute ratios and switchpoints from questions
@@ -145,20 +161,25 @@ public class scale {
             numIncChoices=0;
             for(int i=0; i<ratios.size(); i++){
                 if(choices.get(i)==1){
-                    if(ratios.get(i)>WTR){
+                    if(ratios.get(i)>=WTR){
+                        System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = CONS");
                     } else {
                         numIncChoices++;
                         WTRError+=Math.abs(ratios.get(i)-WTR);
+                        System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = INC");
                     }
                 } else {
-                    if(ratios.get(i)<WTR){
+                    if(ratios.get(i)<=WTR){
+                        System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = CONS");
                     } else {
                         numIncChoices++;
                         WTRError+=Math.abs(ratios.get(i)-WTR);
+                        System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = INC");
                     }
                 }
             }
         }
+        System.out.println("numChoices: " + numChoices + ", numIncChoices: " + numIncChoices);
         Consistency=(double)(numChoices-numIncChoices)/(double)numChoices;
         System.out.println("Computed WTR="+WTR+", Consistency="+Consistency+", WTRerror="+WTRError);
     }
