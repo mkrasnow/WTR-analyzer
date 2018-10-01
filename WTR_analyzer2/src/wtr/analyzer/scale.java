@@ -14,7 +14,7 @@ import java.util.Objects;
  * @author Max
  */
 public class scale {
-    String label, P1, P2, subnum;
+    String label, P1, P2, subnum, WTRLoc;
     ArrayList<question> questions;
     double WTR;
     double Consistency;
@@ -181,6 +181,14 @@ public class scale {
         }
         System.out.println("numChoices: " + numChoices + ", numIncChoices: " + numIncChoices);
         Consistency=(double)(numChoices-numIncChoices)/(double)numChoices;
+        //This code is checking to see if choices are homogenous (all 1s or 2s) and setting WTRLoc as External or Internal
+        boolean allEqual = choices.stream().distinct().limit(2).count() <= 1;
+        if(allEqual){
+            WTRLoc="External";
+        } else {
+            WTRLoc="Internal";
+        }
+        
         System.out.println("Computed WTR="+WTR+", Consistency="+Consistency+", WTRerror="+WTRError);
     }
 }

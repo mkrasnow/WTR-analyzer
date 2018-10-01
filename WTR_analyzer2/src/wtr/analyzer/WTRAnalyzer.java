@@ -441,7 +441,7 @@ public class Go {
                     for (int j=0; j<thisScale.choices.size(); j++){
                         writer.write("Choice_" + j+",");
                     }
-                    writer.write("Num_Avgd_SPs,Max_SP_Consistency,Avgd_SPs,Avgd_SP_range,Avgd_SP_rankRange,Num_Inconsistent,Consistency,WTRerror,WTR");
+                    writer.write("Num_Avgd_SPs,Max_SP_Consistency,Avgd_SPs,Avgd_SP_range,Avgd_SP_rankRange,Num_Inconsistent,Consistency,WTRerror,WTR,WTRLoc");
                 }
                 writer.write("\n");
                 // output each person's data
@@ -477,7 +477,8 @@ public class Go {
                         subdata+=thisScale.numIncChoices+",";
                         subdata+=thisScale.Consistency+",";
                         subdata+=thisScale.WTRError+",";
-                        subdata+=thisScale.WTR;
+                        subdata+=thisScale.WTR+",";
+                        subdata+=thisScale.WTRLoc;
                         
                     }
                     System.out.println(subdata);
