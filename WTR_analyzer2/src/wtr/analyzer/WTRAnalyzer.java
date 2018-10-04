@@ -271,6 +271,16 @@ public class Go {
                     }
                     System.out.println("Successfully read header with "+header.size() + " lines");
                     ArrayList<scale> theScales  = new ArrayList();
+                    
+                    ArrayList<ArrayList<String>> body = new ArrayList();
+                    for(int j=11; j<lines.size(); j++){
+                        ArrayList<String> lineToAdd = new ArrayList();
+                        thisLine=lines.get(j).split(",");
+                        lineToAdd.addAll(Arrays.asList(thisLine));
+                        body.add(lineToAdd);
+                    }
+                    // used to keep track of what choice data to delete if a scale proves to be faulty
+                    int choiceDataIndex = 1;
                     for(int j=0; j<numScales; j++){
                         System.out.println("Setting up scale " + j);
                         //get p1,p2,label, numchoices
@@ -303,14 +313,28 @@ public class Go {
                             System.out.println("Scale label: "+thisScale.label + ", P1: " + thisScale.P1+ ", P2: " + thisScale.P2+ ", Choices: " + thisScale.questions.size());
                             if(thisScale.checkScale()){
                                 theScales.add(thisScale);
+                                choiceDataIndex += numChoices + 1;
                             }else{
-                                System.out.println("This scale was rejected");
+                                System.out.println("This scale was rejected, removing releveant subject choice data...");
+                                for(int k=0; k<numChoices+1; k++){
+                                    for(int z=0; z<body.size(); z++){
+                                        body.get(z).remove(choiceDataIndex);
+                                    }
+                                }
+                                System.out.println("Choice data for faulty scale removed.");
                             }
                         }
                         catch(Exception e)
                         {
                             qs = null;
                             System.out.println(e);
+                            System.out.println("This scale was rejected, removing releveant subject choice data...");
+                                for(int k=0; k<numChoices+1; k++){
+                                    for(int z=0; z<body.size(); z++){
+                                        body.get(z).remove(choiceDataIndex);
+                                    }
+                                }
+                            System.out.println("Choice data for faulty scale removed.");
                         }
                         
                         
@@ -348,17 +372,14 @@ public class Go {
                     
                     
                     //process the data
-                    System.out.println(lines.size()+" subjects' worth of data left in file");
-                    for(String row:lines){
+                    System.out.println(body.size()+" subjects' worth of data left in file");
+                    for(ArrayList<String> row:body){
                         Subject thisSub = new Subject();
-                        String[] thisRow = row.split(",");
-                        String subnum = thisRow[0];
-                        ArrayList<String> subData = new ArrayList();
-                        subData.addAll(Arrays.asList(thisRow));
-                        thisSub.SubNum=subData.get(0);
-                        subData.remove(0);
+                        String subnum = row.get(0);
+                        thisSub.SubNum=row.get(0);
+                        row.remove(0);
                         System.out.print(subnum + "'s data string: ");
-                        for (String s:subData){
+                        for (String s:row){
                             System.out.print(s+", ");
                         } 
                         System.out.println("");
@@ -380,18 +401,18 @@ public class Go {
                             System.out.println("The scale starts out with "+tempScale.choices.size()+" choices (should be 0)");
                             for(int l=0; l<tempScale.numChoices; l++){
                                 //System.out.println("Reading value of: " + subData.get(l));
-                                tempScale.choices.add(Integer.parseInt(subData.get(l)));
+                                tempScale.choices.add(Integer.parseInt(row.get(l)));
                             }
                             System.out.println("Successfully added " +tempScale.choices.size() + " decisions");
                             for(int l=0; l<tempScale.numChoices; l++){
-                                System.out.print("Scale "+ k+", removing value of: " + subData.get(0)+ " from subject data string.....     ");
-                                subData.remove(0);
+                                System.out.print("Scale "+ k+", removing value of: " + row.get(0)+ " from subject data string.....     ");
+                                row.remove(0);
                                 System.out.println(" success");
                             }
-                            if(subData.isEmpty()){
+                            if(row.isEmpty()){
                             } else {
-                                if(subData.get(0).equals("")){
-                                    subData.remove(0);
+                                if(row.get(0).equals("")){
+                                    row.remove(0);
                                     System.out.println("Removed empty cell from data string");
                                 }
                             }
