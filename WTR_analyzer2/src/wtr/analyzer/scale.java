@@ -25,6 +25,7 @@ public class scale {
     double maxConsistency;
     double SPrange;
     double SPrankRange;
+    int numSwitches;
     
     ArrayList<Integer> choices;
     ArrayList<Double> switchpoints;
@@ -188,7 +189,13 @@ public class scale {
         } else {
             WTRLoc="Internal";
         }
-        
+        numSwitches=0;
+        for(int i=0; i<choices.size()-1; i++){
+            if(Objects.equals(choices.get(i), choices.get(i+1))){    
+            } else {
+                numSwitches++;
+            }
+        }
         System.out.println("Computed WTR="+WTR+", Consistency="+Consistency+", WTRerror="+WTRError);
     }
 }
