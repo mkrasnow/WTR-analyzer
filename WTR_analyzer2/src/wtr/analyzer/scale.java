@@ -52,8 +52,51 @@ public class scale {
         computeRnS();
         System.out.println(label + ", ratios size: " + ratios.size());
         
+        ConsOfSP = new ArrayList();
+        MaxConsSPs = new ArrayList();
+        MaxConsSPRanks = new ArrayList();
+        
+        //calculate consistency of all possible switchpoints
+        for(int i=0; i<switchpoints.size(); i++){
+            //create perfect choices for that switchpoint
+            ArrayList<Integer>perfectChoices = new ArrayList();
+            for(int j=0; j<ratios.size(); j++){
+                if(ratios.get(j)>switchpoints.get(i)){
+                    perfectChoices.add(1);
+                } else {
+                    perfectChoices.add(2);
+                }
+                if(Objects.equals(ratios.get(j), switchpoints.get(i))&&j==ratios.size()-1){
+                    perfectChoices.remove(j);
+                    perfectChoices.add(1);
+                }
+            }
+            //test choices against perfect
+            //int localConsistencyCount
+            int localCC=0;
+            for(int j=0; j<choices.size(); j++){
+                if(Objects.equals(choices.get(j), perfectChoices.get(j))){
+                    localCC++;
+                }
+            }
+            ConsOfSP.add(localCC);
+            System.out.print("Perfect for "+switchpoints.get(i)+" would be: ");
+            for(int s:perfectChoices){
+                System.out.print(s+", ");
+            }
+            System.out.println(" and the consistency with that is: "+(double)((double)localCC/(double)ratios.size()));
+        }
+        int MaxC = Collections.max(ConsOfSP);
+        maxConsistency = (double)MaxC/(double)choices.size();
+        for(int i=0; i<ConsOfSP.size(); i++){
+            if(ConsOfSP.get(i)==MaxC){
+                MaxConsSPs.add(switchpoints.get(i));
+                MaxConsSPRanks.add(i);
+            }
+        }
+        
     }
-    public scale(String num, String p1, String p2, String lab, int nc, ArrayList<question> qs, ArrayList<Integer> ch){
+    /*public scale(String num, String p1, String p2, String lab, int nc, ArrayList<question> qs, ArrayList<Integer> ch){
         subnum=num;
         P1=p1;
         P2=p2;
@@ -67,7 +110,7 @@ public class scale {
         computeRnS();
         computeWTRv2();
         System.out.println(subnum + ":" + label + ", switchpoints size: " + switchpoints.size());
-    }
+    }*/
     
     public boolean checkScale(){
         if((P1 != null) && (P2 != null) && (label != null) && /*(numChoices != null) &&*/ (questions != null) && (choices != null) && (switchpoints != null) && (ratios != null)){
@@ -103,7 +146,7 @@ public class scale {
         }
     
     public void computeWTRv2(){  //compute WTR and consistency metrics
-        ConsOfSP = new ArrayList();
+        /*ConsOfSP = new ArrayList();
         MaxConsSPs = new ArrayList();
         MaxConsSPRanks = new ArrayList();
         
@@ -136,7 +179,7 @@ public class scale {
                 System.out.print(s+", ");
             }
             System.out.println(" and the consistency with that is: "+(double)((double)localCC/(double)ratios.size()));
-        }
+        }*/
         
         //find highest consistency switchpoints and calculate WTR
         int MaxC = Collections.max(ConsOfSP);

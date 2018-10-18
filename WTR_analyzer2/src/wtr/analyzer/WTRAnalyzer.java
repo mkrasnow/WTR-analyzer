@@ -387,23 +387,30 @@ public class Go {
                             //System.out.println("This happened");
                             //scale tempScale = theScales.get(k);
                             
-                            scale tempScale = new scale(); 
-                            tempScale.P1 = theScales.get(k).P1;
+                            scale tempScale = new scale(theScales.get(k).P1,theScales.get(k).P2,theScales.get(k).label,theScales.get(k).numChoices,theScales.get(k).questions); 
+                            /*tempScale.P1 = theScales.get(k).P1;
                             tempScale.P2 = theScales.get(k).P2;
                             tempScale.label = theScales.get(k).label;
                             tempScale.numChoices = theScales.get(k).numChoices;
                             tempScale.questions.addAll(theScales.get(k).questions);
                             tempScale.ratios.addAll(theScales.get(k).ratios);
-                            tempScale.switchpoints.addAll(theScales.get(k).switchpoints);
+                            tempScale.switchpoints.addAll(theScales.get(k).switchpoints);*/
                             
                             //tempScale.choices.clear();
                             System.out.println(tempScale.WTR+ " should be null");
                             System.out.println("The scale starts out with "+tempScale.choices.size()+" choices (should be 0)");
                             for(int l=0; l<tempScale.numChoices; l++){
-                                //System.out.println("Reading value of: " + subData.get(l));
-                                tempScale.choices.add(Integer.parseInt(row.get(l)));
+                                if(!row.get(l).equals("")){
+                                    //System.out.println("Reading value of: " + subData.get(l));
+                                    tempScale.choices.add(Integer.parseInt(row.get(l)));
+                                } else {
+                                    System.out.println("A choice was not offered when it was expected, data from Subject " +subnum+ " on scale number " +k+ " will be excluded");
+                                    tempScale.choices = null;
+                                    l=tempScale.numChoices;
+                                }
+                                
                             }
-                            System.out.println("Successfully added " +tempScale.choices.size() + " decisions");
+                            System.out.println("Attempted to add " + tempScale.numChoices + " decisions");
                             for(int l=0; l<tempScale.numChoices; l++){
                                 System.out.print("Scale "+ k+", removing value of: " + row.get(0)+ " from subject data string.....     ");
                                 row.remove(0);
@@ -416,8 +423,9 @@ public class Go {
                                     System.out.println("Removed empty cell from data string");
                                 }
                             }
-                            
-                            tempScale.computeWTRv2();
+                            if(tempScale.choices != null){
+                                tempScale.computeWTRv2();
+                            }
                             thisSub.scales.add(tempScale);
                             System.out.println("This subject now has "+thisSub.scales.size()+" scales processed");
                         }
@@ -459,7 +467,7 @@ public class Go {
                     for (int j=0; j<thisScale.switchpoints.size(); j++){
                         writer.write("SwitchPoint_" + j+",");
                     }
-                    for (int j=0; j<thisScale.choices.size(); j++){
+                    for (int j=0; j<thisScale.numChoices; j++){
                         writer.write("Choice_" + j+",");
                     }
                     writer.write("numSwitches,Num_Avgd_SPs,Max_SP_Consistency,Avgd_SPs,Avgd_SP_range,Avgd_SP_rankRange,Num_Inconsistent,Consistency,WTRerror,WTR,WTRLoc");
@@ -483,24 +491,32 @@ public class Go {
                         for (int k=0; k<thisScale.switchpoints.size(); k++){
                             subdata+=thisScale.switchpoints.get(k)+",";
                         }
-                        for (int k=0; k<thisScale.choices.size(); k++){
-                            subdata+=thisScale.choices.get(k)+",";
+                        if(thisScale.choices != null){
+                            for (int k=0; k<thisScale.choices.size(); k++){
+                                subdata+=thisScale.choices.get(k)+",";
+                            }
+                            subdata+=thisScale.numSwitches+",";
+                            subdata+=thisScale.MaxConsSPs.size()+",";
+                            subdata+=thisScale.maxConsistency+",";
+                            String sps="";
+                            for (int k=0; k<thisScale.MaxConsSPs.size(); k++){
+                                sps+=thisScale.MaxConsSPs.get(k)+";";
+                            }
+                            subdata+=sps.substring(0, sps.length()-2)+",";
+                            subdata+=thisScale.SPrange+",";
+                            subdata+=thisScale.SPrankRange+",";
+                            subdata+=thisScale.numIncChoices+",";
+                            subdata+=thisScale.Consistency+",";
+                            subdata+=thisScale.WTRError+",";
+                            subdata+=thisScale.WTR+",";
+                            subdata+=thisScale.WTRLoc;
+                        } else{
+                            for (int k=0;k<thisScale.numChoices+10;k++){
+                                subdata+="Error,";
+                            }
+                            subdata+="Error";
                         }
-                        subdata+=thisScale.numSwitches+",";
-                        subdata+=thisScale.MaxConsSPs.size()+",";
-                        subdata+=thisScale.maxConsistency+",";
-                        String sps="";
-                        for (int k=0; k<thisScale.MaxConsSPs.size(); k++){
-                            sps+=thisScale.MaxConsSPs.get(k)+";";
-                        }
-                        subdata+=sps.substring(0, sps.length()-2)+",";
-                        subdata+=thisScale.SPrange+",";
-                        subdata+=thisScale.SPrankRange+",";
-                        subdata+=thisScale.numIncChoices+",";
-                        subdata+=thisScale.Consistency+",";
-                        subdata+=thisScale.WTRError+",";
-                        subdata+=thisScale.WTR+",";
-                        subdata+=thisScale.WTRLoc;
+                        
                         
                     }
                     System.out.println(subdata);
