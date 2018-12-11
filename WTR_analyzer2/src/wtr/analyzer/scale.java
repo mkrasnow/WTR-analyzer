@@ -52,7 +52,7 @@ public class scale {
         computeRnS();
         System.out.println(label + ", ratios size: " + ratios.size());
         
-        ConsOfSP = new ArrayList();
+        /*ConsOfSP = new ArrayList();
         MaxConsSPs = new ArrayList();
         MaxConsSPRanks = new ArrayList();
         
@@ -93,7 +93,7 @@ public class scale {
                 MaxConsSPs.add(switchpoints.get(i));
                 MaxConsSPRanks.add(i);
             }
-        }
+        }*/
         
     }
     /*public scale(String num, String p1, String p2, String lab, int nc, ArrayList<question> qs, ArrayList<Integer> ch){
@@ -146,7 +146,7 @@ public class scale {
         }
     
     public void computeWTRv2(){  //compute WTR and consistency metrics
-        /*ConsOfSP = new ArrayList();
+        ConsOfSP = new ArrayList();
         MaxConsSPs = new ArrayList();
         MaxConsSPRanks = new ArrayList();
         
@@ -174,12 +174,13 @@ public class scale {
                 }
             }
             ConsOfSP.add(localCC);
-            System.out.print("Perfect for "+switchpoints.get(i)+" would be: ");
+            /*System.out.print("Perfect for "+switchpoints.get(i)+" would be: ");
             for(int s:perfectChoices){
                 System.out.print(s+", ");
             }
             System.out.println(" and the consistency with that is: "+(double)((double)localCC/(double)ratios.size()));
-        }*/
+            */
+        }
         
         //find highest consistency switchpoints and calculate WTR
         int MaxC = Collections.max(ConsOfSP);
@@ -206,24 +207,24 @@ public class scale {
             for(int i=0; i<ratios.size(); i++){
                 if(choices.get(i)==1){
                     if(ratios.get(i)>=WTR){
-                        System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = CONS");
+                        //System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = CONS");
                     } else {
                         numIncChoices++;
                         WTRError+=Math.abs(ratios.get(i)-WTR);
-                        System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = INC");
+                        //System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = INC");
                     }
                 } else {
                     if(ratios.get(i)<=WTR){
-                        System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = CONS");
+                        //System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = CONS");
                     } else {
                         numIncChoices++;
                         WTRError+=Math.abs(ratios.get(i)-WTR);
-                        System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = INC");
+                        //System.out.println("i: " + i + ", choice: " + choices.get(i) + ", ratio: " + ratios.get(i)+ " = INC");
                     }
                 }
             }
         }
-        System.out.println("numChoices: " + numChoices + ", numIncChoices: " + numIncChoices);
+        //System.out.println("numChoices: " + numChoices + ", numIncChoices: " + numIncChoices);
         Consistency=(double)(numChoices-numIncChoices)/(double)numChoices;
         //This code is checking to see if choices are homogenous (all 1s or 2s) and setting WTRLoc as External or Internal
         boolean allEqual = choices.stream().distinct().limit(2).count() <= 1;

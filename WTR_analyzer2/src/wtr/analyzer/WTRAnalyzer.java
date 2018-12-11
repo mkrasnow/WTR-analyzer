@@ -296,7 +296,7 @@ public class Go {
                         System.out.println("Scale has " + numChoices+ " choices");
                         try{
                             for(int k=1; k<numChoices+1; k++){
-                                System.out.println("Choice " + k);
+                                //System.out.println("Choice " + k);
                                 String thisC, thisp1p1, thisp1p2, thisp2p1, thisp2p2;
                                 thisC=header.get(4).get(k);
                                 thisp1p1=header.get(5).get(k);
@@ -412,9 +412,9 @@ public class Go {
                             }
                             System.out.println("Attempted to add " + tempScale.numChoices + " decisions");
                             for(int l=0; l<tempScale.numChoices; l++){
-                                System.out.print("Scale "+ k+", removing value of: " + row.get(0)+ " from subject data string.....     ");
+                                //System.out.print("Scale "+ k+", removing value of: " + row.get(0)+ " from subject data string.....     ");
                                 row.remove(0);
-                                System.out.println(" success");
+                                //System.out.println(" success");
                             }
                             if(row.isEmpty()){
                             } else {
@@ -430,13 +430,13 @@ public class Go {
                             System.out.println("This subject now has "+thisSub.scales.size()+" scales processed");
                         }
                         subList.add(thisSub);
-                        for(Subject s:subList){
+                        /*for(Subject s:subList){
                             System.out.print(s.SubNum);
                             for(scale t:s.scales){
                                 System.out.print(" WTR="+t.WTR+" ");
                             }
                             System.out.println();
-                        }
+                        }*/
                     }
                                       
                     
