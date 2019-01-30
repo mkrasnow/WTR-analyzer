@@ -22,7 +22,7 @@ public class question {
         pick2pay1=p2p1;
         pick2pay2=p2p2;
         ratio = (p1p1-p2p1)/(p2p2-p2p1);
-        System.out.println("Qnum: " + num + ", ratio: "+ ratio);
+        //System.out.println("Qnum: " + num + ", ratio: "+ ratio);
     }
     
     public boolean checkNull() throws IllegalAccessException {

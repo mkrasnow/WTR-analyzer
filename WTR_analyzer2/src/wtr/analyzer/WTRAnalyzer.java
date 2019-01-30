@@ -20,7 +20,8 @@ import javax.swing.*;
 public class WTRAnalyzer {
     
     JFrame theFrame;
-    JTextField directoryField, outputField, directoryerror, outputinfo;
+    JTextField directoryField, outputField;
+    JTextArea directoryerror, outputinfo;
     JPanel wholePanel, topPanel, midPanel, bottomPanel, emptyPanel1,emptyPanel2;
     Rectangle wr = new Rectangle(800,400);
     Dimension topPan = new Dimension(800,200);
@@ -67,17 +68,20 @@ public class WTRAnalyzer {
        
        directoryField = new JTextField(20);
        directoryField.setFont(theFont);
-       directoryField.setText("Set input files...");
+       directoryField.setText("C:\\Users\\Krasnow Lab\\Documents\\NetBeansProjects\\WTR-analyzer\\WTR_analyzer2\\WTRData\\completeData.csv");
        directoryField.setMaximumSize(labelDimension);
        outputField = new JTextField(20);
        outputField.setFont(theFont);
+       outputField.setText("C:\\Users\\Krasnow Lab\\Documents\\NetBeansProjects\\WTR-analyzer\\WTR_analyzer2\\WTRData\\completeData_results.csv");
        outputField.setMaximumSize(labelDimension);
-       directoryerror = new JTextField(20);
+       directoryerror = new JTextArea(2,20);
        directoryerror.setFont(theFont);
        directoryerror.setText("Errors are shown here");
        directoryerror.setMaximumSize(labelDimension);
-       outputinfo = new JTextField(20);
+       outputinfo = new JTextArea(2,15);
        outputinfo.setFont(theFont);
+       outputinfo.setWrapStyleWord(true);
+       outputinfo.setLineWrap(true);
        outputinfo.setText("Completion information displayed here");
        outputinfo.setMaximumSize(labelDimension);
        
@@ -177,7 +181,7 @@ public class Go {
     
     //methods
     public void getGoing(){
-        System.out.println("Started!");
+        //System.out.println("Started!");
         
         //Name directory where data is stored
         File dir = new File(direc);
@@ -190,6 +194,9 @@ public class Go {
         } else if (tempfil.isDirectory()){
             output = new File(fil + "\\yourData.csv");
             outputinfo.setText("File saved to chosen directory and named \"yourdata\"");
+        } else if (fil.endsWith(".csv")){
+            output = new File(fil);
+            outputinfo.setText("File saved to "+fil);
         } else {
             output = new File(fil+ ".csv");
             outputinfo.setText("File saved to chosen directory");
@@ -238,7 +245,7 @@ public class Go {
                     String toRead = dirContents.get(i);
                     dataReader = new FileReader(toRead);
                     reader = new BufferedReader(dataReader);
-                    System.out.println("Opened file!");
+                    //System.out.println("Opened file!");
                     //create temporary variable to read in lines of data
                     String line = null;
                     ArrayList<String> lines = new ArrayList();
@@ -247,21 +254,21 @@ public class Go {
                     while ((line=reader.readLine()) != null){
                         lines.add(line);
                     }
-                    System.out.println(lines.size() + " total lines read from file");
+                    //System.out.println(lines.size() + " total lines read from file");
                     
                     //process the header
                     //count the number of scales
                     int numScales = 0;
                     String[] thisLine=lines.get(0).split(",");
                     for(int a=0; a<thisLine.length; a++) {
-                        System.out.println(thisLine[a]);
+                        //System.out.println(thisLine[a]);
                         if (!thisLine[a].isEmpty()) {
                             numScales++;
-                            System.out.println("Not empty!");
+                            //System.out.println("Not empty!");
                         }
                     }
                     numScales/=2;
-                    System.out.println(numScales+ " scales in this data file");
+                    //System.out.println(numScales+ " scales in this data file");
                     ArrayList<ArrayList<String>> header = new ArrayList();
                     for(int j=0; j<9; j++){
                         ArrayList<String> lineToAdd = new ArrayList();
@@ -269,7 +276,7 @@ public class Go {
                         lineToAdd.addAll(Arrays.asList(thisLine));
                         header.add(lineToAdd);
                     }
-                    System.out.println("Successfully read header with "+header.size() + " lines");
+                    //System.out.println("Successfully read header with "+header.size() + " lines");
                     ArrayList<scale> theScales  = new ArrayList();
                     
                     ArrayList<ArrayList<String>> body = new ArrayList();
@@ -282,7 +289,7 @@ public class Go {
                     // used to keep track of what choice data to delete if a scale proves to be faulty
                     int choiceDataIndex = 1;
                     for(int j=0; j<numScales; j++){
-                        System.out.println("Setting up scale " + j);
+                        //System.out.println("Setting up scale " + j);
                         //get p1,p2,label, numchoices
                         String p1, p2, label; 
                         int numChoices;
@@ -293,7 +300,7 @@ public class Go {
                         //read each choice into a question & make list questions
                         numChoices=Integer.parseInt(header.get(3).get(1));
                         ArrayList<question> qs = new ArrayList();
-                        System.out.println("Scale has " + numChoices+ " choices");
+                        //System.out.println("Scale has " + numChoices+ " choices");
                         try{
                             for(int k=1; k<numChoices+1; k++){
                                 //System.out.println("Choice " + k);
@@ -308,43 +315,43 @@ public class Go {
                             }
                             
                             //assemble scale and add to list of scales in datafile
-                            System.out.println("Ready to make a scale");
+                            //System.out.println("Ready to make a scale");
                             scale thisScale = new scale(p1, p2, label, numChoices, qs);
-                            System.out.println("Scale label: "+thisScale.label + ", P1: " + thisScale.P1+ ", P2: " + thisScale.P2+ ", Choices: " + thisScale.questions.size());
+                            //System.out.println("Scale label: "+thisScale.label + ", P1: " + thisScale.P1+ ", P2: " + thisScale.P2+ ", Choices: " + thisScale.questions.size());
                             if(thisScale.checkScale()){
                                 theScales.add(thisScale);
                                 choiceDataIndex += numChoices + 1;
                             }else{
-                                System.out.println("This scale was rejected, removing releveant subject choice data...");
+                                //System.out.println("This scale was rejected, removing releveant subject choice data...");
                                 for(int k=0; k<numChoices+1; k++){
                                     for(int z=0; z<body.size(); z++){
                                         body.get(z).remove(choiceDataIndex);
                                     }
                                 }
-                                System.out.println("Choice data for faulty scale removed.");
+                                //System.out.println("Choice data for faulty scale removed.");
                             }
                         }
                         catch(Exception e)
                         {
                             qs = null;
-                            System.out.println(e);
-                            System.out.println("This scale was rejected, removing releveant subject choice data...");
+                            //System.out.println(e);
+                            //System.out.println("This scale was rejected, removing releveant subject choice data...");
                                 for(int k=0; k<numChoices+1; k++){
                                     for(int z=0; z<body.size(); z++){
                                         body.get(z).remove(choiceDataIndex);
                                     }
                                 }
-                            System.out.println("Choice data for faulty scale removed.");
+                            //System.out.println("Choice data for faulty scale removed.");
                         }
                         
                         
                         
                         
-                        System.out.println(theScales.size() + " correctly formatted scale(s) processed so far");
+                        //System.out.println(theScales.size() + " correctly formatted scale(s) processed so far");
                         
                         //clean out that scale
                         for(int k=0; k<numChoices+1; k++){
-                            System.out.println("Removing column " + k + " from header");
+                            //System.out.println("Removing column " + k + " from header");
                             if(header.get(0).isEmpty()){} else {header.get(0).remove(0);}
                             if(header.get(1).isEmpty()){} else {header.get(1).remove(0);}
                             if(header.get(2).isEmpty()){} else {header.get(2).remove(0);}
@@ -356,8 +363,8 @@ public class Go {
                             if(header.get(8).isEmpty()){} else {header.get(8).remove(0);}
                         }
                     }
-                    System.out.println("Removing header from data");
-                    //delete header from data
+                    //System.out.println("Removing header from data");
+                    /*  I think this is unnecceary since we already separate lines into header and body? //delete header from data
                     lines.remove(10);
                     lines.remove(9);
                     lines.remove(8);
@@ -369,20 +376,20 @@ public class Go {
                     lines.remove(2);
                     lines.remove(1);
                     lines.remove(0);
-                    
+                    */
                     
                     //process the data
-                    System.out.println(body.size()+" subjects' worth of data left in file");
+                    //System.out.println(body.size()+" subjects' worth of data left in file");
                     for(ArrayList<String> row:body){
                         Subject thisSub = new Subject();
                         String subnum = row.get(0);
                         thisSub.SubNum=row.get(0);
                         row.remove(0);
-                        System.out.print(subnum + "'s data string: ");
+                        //System.out.print(subnum + "'s data string: ");
                         for (String s:row){
-                            System.out.print(s+", ");
+                            //System.out.print(s+", ");
                         } 
-                        System.out.println("");
+                        //System.out.println("");
                         for(int k=0; k<theScales.size(); k++){
                             //System.out.println("This happened");
                             //scale tempScale = theScales.get(k);
@@ -397,20 +404,20 @@ public class Go {
                             tempScale.switchpoints.addAll(theScales.get(k).switchpoints);*/
                             
                             //tempScale.choices.clear();
-                            System.out.println(tempScale.WTR+ " should be null");
-                            System.out.println("The scale starts out with "+tempScale.choices.size()+" choices (should be 0)");
+                            //System.out.println(tempScale.WTR+ " should be null");
+                            //System.out.println("The scale starts out with "+tempScale.choices.size()+" choices (should be 0)");
                             for(int l=0; l<tempScale.numChoices; l++){
                                 if(!row.get(l).equals("")){
                                     //System.out.println("Reading value of: " + subData.get(l));
                                     tempScale.choices.add(Integer.parseInt(row.get(l)));
                                 } else {
-                                    System.out.println("A choice was not offered when it was expected, data from Subject " +subnum+ " on scale number " +k+ " will be excluded");
-                                    tempScale.choices = null;
+                                    //System.out.println("A choice was not offered when it was expected, data from Subject " +subnum+ " on scale number " +k+ " will be excluded");
+                                    tempScale.choices = null; // <-FLAG should we preserve the choices here and simply mark the scale as not to be processed?
                                     l=tempScale.numChoices;
                                 }
                                 
                             }
-                            System.out.println("Attempted to add " + tempScale.numChoices + " decisions");
+                            //System.out.println("Attempted to add " + tempScale.numChoices + " decisions");
                             for(int l=0; l<tempScale.numChoices; l++){
                                 //System.out.print("Scale "+ k+", removing value of: " + row.get(0)+ " from subject data string.....     ");
                                 row.remove(0);
@@ -420,14 +427,14 @@ public class Go {
                             } else {
                                 if(row.get(0).equals("")){
                                     row.remove(0);
-                                    System.out.println("Removed empty cell from data string");
+                                    //System.out.println("Removed empty cell from data string");
                                 }
                             }
                             if(tempScale.choices != null){
                                 tempScale.computeWTRv2();
                             }
                             thisSub.scales.add(tempScale);
-                            System.out.println("This subject now has "+thisSub.scales.size()+" scales processed");
+                            //System.out.println("This subject now has "+thisSub.scales.size()+" scales processed");
                         }
                         subList.add(thisSub);
                         /*for(Subject s:subList){
@@ -443,7 +450,7 @@ public class Go {
                             
                     //close the reader
                     reader.close();
-                    System.out.println("Closed file!");
+                    //System.out.println("Closed file!");
                     } catch (Exception ex) {
                     //ex.printStackTrace();
                     directoryerror.setText("Problem reading the files. Perhaps no files were selected");
@@ -458,7 +465,7 @@ public class Go {
                 
                 //create a header row
                 writer.write("Subject");
-                for(int i=0; i<subList.get(0).scales.size(); i++){
+               for(int i=0; i<subList.get(0).scales.size(); i++){
                     scale thisScale = subList.get(0).scales.get(i);
                     writer.write(",Scale_Label,Player_1-Player_2,Scale_Length,");
                     for (int j=0; j<thisScale.ratios.size(); j++){
@@ -470,11 +477,11 @@ public class Go {
                     for (int j=0; j<thisScale.numChoices; j++){
                         writer.write("Choice_" + j+",");
                     }
-                    writer.write("numSwitches,Num_Avgd_SPs,Max_SP_Consistency,Avgd_SPs,Avgd_SP_range,Avgd_SP_rankRange,Num_Inconsistent,Consistency,WTRerror,WTR,WTRLoc");
+                    writer.write("numSwitches,Num_Avgd_SPs,Max_SP_Consistency,Avgd_SPs,Avgd_SP_range,Avgd_SP_rankRange,Num_Inconsistent,"+thisScale.label+"_Consistency,"+thisScale.label+"_WTRerror,"+thisScale.label+"_WTR,WTRLoc");
                 }
                 writer.write("\n");
                 // output each person's data
-                System.out.println(subList.size()+" subjects to write!");
+                //System.out.println(subList.size()+" subjects to write!");
                 for(int i=0; i<subList.size(); i++){
                     String subdata = "";
                     Subject sub = subList.get(i);
@@ -519,14 +526,13 @@ public class Go {
                         
                         
                     }
-                    System.out.println(subdata);
+                    //System.out.println(subdata);
                     writer.write(subdata);
                     writer.write("\n");
                 }
                 
             } catch (IOException ex) {
-            ex.printStackTrace();
-            //ex.printStackTrace();
+                    ex.printStackTrace();
                     outputinfo.setText("problem saving the data");
                     theFrame.validate();
             }
