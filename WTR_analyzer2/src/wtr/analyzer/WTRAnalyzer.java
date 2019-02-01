@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import javax.swing.*;
 
 /**
@@ -68,11 +67,11 @@ public class WTRAnalyzer {
        
        directoryField = new JTextField(20);
        directoryField.setFont(theFont);
-       directoryField.setText("C:\\Users\\Krasnow Lab\\Documents\\NetBeansProjects\\WTR-analyzer\\WTR_analyzer2\\WTRData\\completeData.csv");
+       directoryField.setText("C:\\Users\\Max\\Dropbox\\Harvard\\Research\\Java\\WTR-Analyzer\\WTR-analyzer\\WTR_analyzer2\\WTRData\\testingData.csv");
        directoryField.setMaximumSize(labelDimension);
        outputField = new JTextField(20);
        outputField.setFont(theFont);
-       outputField.setText("C:\\Users\\Krasnow Lab\\Documents\\NetBeansProjects\\WTR-analyzer\\WTR_analyzer2\\WTRData\\completeData_results.csv");
+       outputField.setText("C:\\Users\\Max\\Dropbox\\Harvard\\Research\\Java\\WTR-Analyzer\\WTR-analyzer\\WTR_analyzer2\\WTRData\\testingData_results.csv");
        outputField.setMaximumSize(labelDimension);
        directoryerror = new JTextArea(2,20);
        directoryerror.setFont(theFont);
@@ -178,11 +177,26 @@ public class Go {
     //constructor
     public Go(){
     }
-    
+    private boolean parseableInt(String s){
+        try{
+            Integer.parseInt(s);
+        } catch (NumberFormatException e){
+            return false;
+        }
+        return true;
+    }
+    private boolean parseableDub(String s){
+        try{
+            Double.parseDouble(s);
+        } catch (NumberFormatException e){
+            return false;
+        }
+        return true;
+    }
+        
     //methods
     public void getGoing(){
-        //System.out.println("Started!");
-        
+        System.out.println("Started!");
         //Name directory where data is stored
         File dir = new File(direc);
         //Name file data will be written to
@@ -245,7 +259,7 @@ public class Go {
                     String toRead = dirContents.get(i);
                     dataReader = new FileReader(toRead);
                     reader = new BufferedReader(dataReader);
-                    //System.out.println("Opened file!");
+                    System.out.println("Opened file!");
                     //create temporary variable to read in lines of data
                     String line = null;
                     ArrayList<String> lines = new ArrayList();
@@ -254,7 +268,7 @@ public class Go {
                     while ((line=reader.readLine()) != null){
                         lines.add(line);
                     }
-                    //System.out.println(lines.size() + " total lines read from file");
+                    System.out.println(lines.size() + " total lines read from file");
                     
                     //process the header
                     //count the number of scales
@@ -268,7 +282,7 @@ public class Go {
                         }
                     }
                     numScales/=2;
-                    //System.out.println(numScales+ " scales in this data file");
+                    System.out.println(numScales+ " scales in this data file");
                     ArrayList<ArrayList<String>> header = new ArrayList();
                     for(int j=0; j<9; j++){
                         ArrayList<String> lineToAdd = new ArrayList();
@@ -276,7 +290,7 @@ public class Go {
                         lineToAdd.addAll(Arrays.asList(thisLine));
                         header.add(lineToAdd);
                     }
-                    //System.out.println("Successfully read header with "+header.size() + " lines");
+                    System.out.println("Successfully read header with "+header.size() + " lines");
                     ArrayList<scale> theScales  = new ArrayList();
                     
                     ArrayList<ArrayList<String>> body = new ArrayList();
@@ -286,10 +300,9 @@ public class Go {
                         lineToAdd.addAll(Arrays.asList(thisLine));
                         body.add(lineToAdd);
                     }
-                    // used to keep track of what choice data to delete if a scale proves to be faulty
-                    int choiceDataIndex = 1;
+
                     for(int j=0; j<numScales; j++){
-                        //System.out.println("Setting up scale " + j);
+                        System.out.println("Setting up scale " + j);
                         //get p1,p2,label, numchoices
                         String p1, p2, label; 
                         int numChoices;
@@ -300,54 +313,34 @@ public class Go {
                         //read each choice into a question & make list questions
                         numChoices=Integer.parseInt(header.get(3).get(1));
                         ArrayList<question> qs = new ArrayList();
-                        //System.out.println("Scale has " + numChoices+ " choices");
-                        try{
-                            for(int k=1; k<numChoices+1; k++){
-                                //System.out.println("Choice " + k);
-                                String thisC, thisp1p1, thisp1p2, thisp2p1, thisp2p2;
-                                thisC=header.get(4).get(k);
-                                thisp1p1=header.get(5).get(k);
-                                thisp1p2=header.get(6).get(k);
-                                thisp2p1=header.get(7).get(k);
-                                thisp2p2=header.get(8).get(k);
+                        System.out.println("Scale has " + numChoices+ " choices");
+                        
+                        for(int k=1; k<numChoices+1; k++){
+                            System.out.println("Choice " + k);
+                            String thisC, thisp1p1, thisp1p2, thisp2p1, thisp2p2;
+                            thisC=header.get(4).get(k);
+                            thisp1p1=header.get(5).get(k);
+                            thisp1p2=header.get(6).get(k);
+                            thisp2p1=header.get(7).get(k);
+                            thisp2p2=header.get(8).get(k);
+                            if(parseableDub(thisp1p1)&&parseableDub(thisp1p2)&&parseableDub(thisp2p1)&&parseableDub(thisp2p2)&&parseableInt(thisC)){//this checks if the numbers are parseable as ints and doubles
                                 question thisQ = new question(Integer.parseInt(thisC), Double.parseDouble(thisp1p1), Double.parseDouble(thisp1p2), Double.parseDouble(thisp2p1), Double.parseDouble(thisp2p2));
                                 qs.add(thisQ);
+                            } else {
+                                question thisQ = new question();
+                                qs.add(thisQ);
                             }
-                            
-                            //assemble scale and add to list of scales in datafile
-                            //System.out.println("Ready to make a scale");
-                            scale thisScale = new scale(p1, p2, label, numChoices, qs);
-                            //System.out.println("Scale label: "+thisScale.label + ", P1: " + thisScale.P1+ ", P2: " + thisScale.P2+ ", Choices: " + thisScale.questions.size());
-                            if(thisScale.checkScale()){
-                                theScales.add(thisScale);
-                                choiceDataIndex += numChoices + 1;
-                            }else{
-                                //System.out.println("This scale was rejected, removing releveant subject choice data...");
-                                for(int k=0; k<numChoices+1; k++){
-                                    for(int z=0; z<body.size(); z++){
-                                        body.get(z).remove(choiceDataIndex);
-                                    }
-                                }
-                                //System.out.println("Choice data for faulty scale removed.");
-                            }
+  
                         }
-                        catch(Exception e)
-                        {
-                            qs = null;
-                            //System.out.println(e);
-                            //System.out.println("This scale was rejected, removing releveant subject choice data...");
-                                for(int k=0; k<numChoices+1; k++){
-                                    for(int z=0; z<body.size(); z++){
-                                        body.get(z).remove(choiceDataIndex);
-                                    }
-                                }
-                            //System.out.println("Choice data for faulty scale removed.");
-                        }
-                        
-                        
-                        
-                        
-                        //System.out.println(theScales.size() + " correctly formatted scale(s) processed so far");
+
+                        //assemble scale and add to list of scales in datafile
+                        System.out.println("Ready to make a scale");
+                        scale thisScale = new scale(p1, p2, label, numChoices, qs);
+                        System.out.println("Scale label: "+thisScale.label + ", P1: " + thisScale.P1+ ", P2: " + thisScale.P2+ ", Choices: " + thisScale.questions.size());
+
+                        theScales.add(thisScale);
+
+                        System.out.println(theScales.size() + " scale(s) processed so far");
                         
                         //clean out that scale
                         for(int k=0; k<numChoices+1; k++){
@@ -363,57 +356,35 @@ public class Go {
                             if(header.get(8).isEmpty()){} else {header.get(8).remove(0);}
                         }
                     }
-                    //System.out.println("Removing header from data");
-                    /*  I think this is unnecceary since we already separate lines into header and body? //delete header from data
-                    lines.remove(10);
-                    lines.remove(9);
-                    lines.remove(8);
-                    lines.remove(7);
-                    lines.remove(6);
-                    lines.remove(5);
-                    lines.remove(4);
-                    lines.remove(3);
-                    lines.remove(2);
-                    lines.remove(1);
-                    lines.remove(0);
-                    */
                     
                     //process the data
-                    //System.out.println(body.size()+" subjects' worth of data left in file");
+                    System.out.println(body.size()+" subjects' worth of data left in file");
                     for(ArrayList<String> row:body){
                         Subject thisSub = new Subject();
                         String subnum = row.get(0);
                         thisSub.SubNum=row.get(0);
                         row.remove(0);
-                        //System.out.print(subnum + "'s data string: ");
+                        System.out.print(subnum + "'s data string: ");
                         for (String s:row){
-                            //System.out.print(s+", ");
+                            System.out.print(s+", ");
                         } 
-                        //System.out.println("");
+                        System.out.println("");
                         for(int k=0; k<theScales.size(); k++){
                             //System.out.println("This happened");
                             //scale tempScale = theScales.get(k);
                             
                             scale tempScale = new scale(theScales.get(k).P1,theScales.get(k).P2,theScales.get(k).label,theScales.get(k).numChoices,theScales.get(k).questions); 
-                            /*tempScale.P1 = theScales.get(k).P1;
-                            tempScale.P2 = theScales.get(k).P2;
-                            tempScale.label = theScales.get(k).label;
-                            tempScale.numChoices = theScales.get(k).numChoices;
-                            tempScale.questions.addAll(theScales.get(k).questions);
-                            tempScale.ratios.addAll(theScales.get(k).ratios);
-                            tempScale.switchpoints.addAll(theScales.get(k).switchpoints);*/
-                            
-                            //tempScale.choices.clear();
-                            //System.out.println(tempScale.WTR+ " should be null");
-                            //System.out.println("The scale starts out with "+tempScale.choices.size()+" choices (should be 0)");
+                            tempScale.scaleValid=theScales.get(k).scaleValid;
+
+
+                            System.out.println(tempScale.WTR+ " should be 0");
+                            System.out.println("The scale starts out with "+tempScale.choices.size()+" choices (should be 0)");
                             for(int l=0; l<tempScale.numChoices; l++){
-                                if(!row.get(l).equals("")){
+                                if(row.get(l).equals("1")||row.get(l).equals("2")){
                                     //System.out.println("Reading value of: " + subData.get(l));
                                     tempScale.choices.add(Integer.parseInt(row.get(l)));
                                 } else {
-                                    //System.out.println("A choice was not offered when it was expected, data from Subject " +subnum+ " on scale number " +k+ " will be excluded");
-                                    tempScale.choices = null; // <-FLAG should we preserve the choices here and simply mark the scale as not to be processed?
-                                    l=tempScale.numChoices;
+                                    tempScale.choicesComplete=false;
                                 }
                                 
                             }
@@ -430,11 +401,21 @@ public class Go {
                                     //System.out.println("Removed empty cell from data string");
                                 }
                             }
-                            if(tempScale.choices != null){
+                            if(tempScale.scaleValid&&tempScale.choicesComplete){
                                 tempScale.computeWTRv2();
+                            }  else{
+                                tempScale.WTR=99999;
+                                tempScale.Consistency=99999;
+                                tempScale.PerfectCon=99999;
+                                tempScale.WTRError=99999;
+                                tempScale.numIncChoices=99999;
+                                tempScale.maxConsistency=99999;
+                                tempScale.SPrange=99999;
+                                tempScale.SPrankRange=99999;
+                                tempScale.numSwitches=99999;
                             }
                             thisSub.scales.add(tempScale);
-                            //System.out.println("This subject now has "+thisSub.scales.size()+" scales processed");
+                            System.out.println("This subject now has "+thisSub.scales.size()+" scales processed");
                         }
                         subList.add(thisSub);
                         /*for(Subject s:subList){
@@ -450,7 +431,7 @@ public class Go {
                             
                     //close the reader
                     reader.close();
-                    //System.out.println("Closed file!");
+                    System.out.println("Closed file!");
                     } catch (Exception ex) {
                     //ex.printStackTrace();
                     directoryerror.setText("Problem reading the files. Perhaps no files were selected");
@@ -465,68 +446,75 @@ public class Go {
                 
                 //create a header row
                 writer.write("Subject");
-               for(int i=0; i<subList.get(0).scales.size(); i++){
+                for(int i=0; i<subList.get(0).scales.size(); i++){
                     scale thisScale = subList.get(0).scales.get(i);
-                    writer.write(",Scale_Label,Player_1-Player_2,Scale_Length,");
-                    for (int j=0; j<thisScale.ratios.size(); j++){
-                        writer.write("Ratio_" + j+",");
+                    if(thisScale.scaleValid){
+                        writer.write(",Scale_Label,Player_1-Player_2,Scale_Length,");
+                        for (int j=0; j<thisScale.ratios.size(); j++){
+                            writer.write("Ratio_" + j+",");
+                        }
+                        for (int j=0; j<thisScale.switchpoints.size(); j++){
+                            writer.write("SwitchPoint_" + j+",");
+                        }
+                        for (int j=0; j<thisScale.numChoices; j++){
+                            writer.write("Choice_" + j+",");
+                        }
+                        writer.write("numSwitches,Num_Avgd_SPs,Max_SP_Consistency,Avgd_SPs,Avgd_SP_range,Avgd_SP_rankRange,Num_Inconsistent,"+thisScale.label+"_Consistency,"+thisScale.label+"_WTRerror,"+thisScale.label+"_WTR,WTRLoc");
+                    } else {
+                        writer.write(",Scale Invalid - Check Datafile");
                     }
-                    for (int j=0; j<thisScale.switchpoints.size(); j++){
-                        writer.write("SwitchPoint_" + j+",");
-                    }
-                    for (int j=0; j<thisScale.numChoices; j++){
-                        writer.write("Choice_" + j+",");
-                    }
-                    writer.write("numSwitches,Num_Avgd_SPs,Max_SP_Consistency,Avgd_SPs,Avgd_SP_range,Avgd_SP_rankRange,Num_Inconsistent,"+thisScale.label+"_Consistency,"+thisScale.label+"_WTRerror,"+thisScale.label+"_WTR,WTRLoc");
                 }
                 writer.write("\n");
                 // output each person's data
-                //System.out.println(subList.size()+" subjects to write!");
+                System.out.println(subList.size()+" subjects to write!");
                 for(int i=0; i<subList.size(); i++){
                     String subdata = "";
                     Subject sub = subList.get(i);
                     subdata = sub.SubNum;
-                    //System.out.println(sub.SubNum);
+                    System.out.println(sub.SubNum + " has " + sub.scales.size() + " scales");
                     for(int j=0; j<sub.scales.size(); j++){
                         scale thisScale=sub.scales.get(j);
-                        subdata+=","+thisScale.label+",";
-                        subdata+=thisScale.P1+":"+sub.scales.get(j).P2+",";
-                        subdata+=thisScale.ratios.size()+",";
-                        for (int k=0; k<thisScale.ratios.size(); k++){
-                            subdata+=thisScale.ratios.get(k)+",";
-                        }
-                        for (int k=0; k<thisScale.switchpoints.size(); k++){
-                            subdata+=thisScale.switchpoints.get(k)+",";
-                        }
-                        if(thisScale.choices != null){
-                            for (int k=0; k<thisScale.choices.size(); k++){
-                                subdata+=thisScale.choices.get(k)+",";
+                        if(!thisScale.scaleValid){
+                            subdata+=",Scale Invalid - Check Datafile";
+                        } else {
+                            subdata+=","+thisScale.label+",";
+                            subdata+=thisScale.P1+":"+sub.scales.get(j).P2+",";
+                            subdata+=thisScale.ratios.size()+",";
+                            for (int k=0; k<thisScale.ratios.size(); k++){
+                                subdata+=thisScale.ratios.get(k)+",";
                             }
-                            subdata+=thisScale.numSwitches+",";
-                            subdata+=thisScale.MaxConsSPs.size()+",";
-                            subdata+=thisScale.maxConsistency+",";
-                            String sps="";
-                            for (int k=0; k<thisScale.MaxConsSPs.size(); k++){
-                                sps+=thisScale.MaxConsSPs.get(k)+";";
+                            for (int k=0; k<thisScale.switchpoints.size(); k++){
+                                subdata+=thisScale.switchpoints.get(k)+",";
                             }
-                            subdata+=sps.substring(0, sps.length()-2)+",";
-                            subdata+=thisScale.SPrange+",";
-                            subdata+=thisScale.SPrankRange+",";
-                            subdata+=thisScale.numIncChoices+",";
-                            subdata+=thisScale.Consistency+",";
-                            subdata+=thisScale.WTRError+",";
-                            subdata+=thisScale.WTR+",";
-                            subdata+=thisScale.WTRLoc;
-                        } else{
-                            for (int k=0;k<thisScale.numChoices+10;k++){
-                                subdata+="Error,";
+                            
+                            if(!thisScale.choicesComplete){
+                                for (int k=0;k<thisScale.numChoices+10;k++){
+                                    subdata+="Error in Choices,";
+                                }
+                                subdata+="Error in Choices";
+                            } else {
+                                for (int k=0; k<thisScale.choices.size(); k++){
+                                    subdata+=thisScale.choices.get(k)+",";
+                                }
+                                subdata+=thisScale.numSwitches+",";
+                                subdata+=thisScale.MaxConsSPs.size()+",";
+                                subdata+=thisScale.maxConsistency+",";
+                                String sps="";
+                                for (int k=0; k<thisScale.MaxConsSPs.size(); k++){
+                                    sps+=thisScale.MaxConsSPs.get(k)+";";
+                                }
+                                subdata+=sps.substring(0, sps.length()-2)+",";
+                                subdata+=thisScale.SPrange+",";
+                                subdata+=thisScale.SPrankRange+",";
+                                subdata+=thisScale.numIncChoices+",";
+                                subdata+=thisScale.Consistency+",";
+                                subdata+=thisScale.WTRError+",";
+                                subdata+=thisScale.WTR+",";
+                                subdata+=thisScale.WTRLoc;
                             }
-                            subdata+="Error";
                         }
-                        
-                        
                     }
-                    //System.out.println(subdata);
+                    System.out.println(subdata);
                     writer.write(subdata);
                     writer.write("\n");
                 }

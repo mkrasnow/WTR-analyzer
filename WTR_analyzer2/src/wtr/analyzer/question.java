@@ -14,7 +14,9 @@ import java.lang.reflect.Field;
 public class question {
     int num;
     double pick1pay1, pick1pay2, pick2pay1, pick2pay2, ratio;
+    boolean questionValid;
     
+    //this is for valid questions
     public question(int qn, double p1p1, double p1p2, double p2p1, double p2p2){
         num=qn;
         pick1pay1=p1p1;
@@ -22,7 +24,13 @@ public class question {
         pick2pay1=p2p1;
         pick2pay2=p2p2;
         ratio = (p1p1-p2p1)/(p2p2-p2p1);
-        //System.out.println("Qnum: " + num + ", ratio: "+ ratio);
+        questionValid=true;
+        System.out.println("Qnum: " + num + ", ratio: "+ ratio);
+    }
+    
+    //this is for invalid questions
+    public question(){
+        questionValid=false;
     }
     
     public boolean checkNull() throws IllegalAccessException {

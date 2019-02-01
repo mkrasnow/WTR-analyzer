@@ -52,87 +52,42 @@ public class scale {
         choices = new ArrayList();
         switchpoints = new ArrayList();
         ratios = new ArrayList();
-        computeRnS();
-        //System.out.println(label + ", ratios size: " + ratios.size());
-        
-        /*ConsOfSP = new ArrayList();
-        MaxConsSPs = new ArrayList();
-        MaxConsSPRanks = new ArrayList();
-        
-        //calculate consistency of all possible switchpoints
-        for(int i=0; i<switchpoints.size(); i++){
-            //create perfect choices for that switchpoint
-            ArrayList<Integer>perfectChoices = new ArrayList();
-            for(int j=0; j<ratios.size(); j++){
-                if(ratios.get(j)>switchpoints.get(i)){
-                    perfectChoices.add(1);
-                } else {
-                    perfectChoices.add(2);
-                }
-                if(Objects.equals(ratios.get(j), switchpoints.get(i))&&j==ratios.size()-1){
-                    perfectChoices.remove(j);
-                    perfectChoices.add(1);
-                }
-            }
-            //test choices against perfect
-            //int localConsistencyCount
-            int localCC=0;
-            for(int j=0; j<choices.size(); j++){
-                if(Objects.equals(choices.get(j), perfectChoices.get(j))){
-                    localCC++;
-                }
-            }
-            ConsOfSP.add(localCC);
-            System.out.print("Perfect for "+switchpoints.get(i)+" would be: ");
-            for(int s:perfectChoices){
-                System.out.print(s+", ");
-            }
-            System.out.println(" and the consistency with that is: "+(double)((double)localCC/(double)ratios.size()));
+        scaleValid=true;
+        choicesComplete=true;
+        checkScale();
+        if(scaleValid){computeRnS();}
+    } 
+    public final void checkScale(){
+        if(P1.isEmpty()){
+            P1 = "P1unlabeled";
+            scaleValid = false;
         }
-        int MaxC = Collections.max(ConsOfSP);
-        maxConsistency = (double)MaxC/(double)choices.size();
-        for(int i=0; i<ConsOfSP.size(); i++){
-            if(ConsOfSP.get(i)==MaxC){
-                MaxConsSPs.add(switchpoints.get(i));
-                MaxConsSPRanks.add(i);
-            }
-        }*/
-        
-    }
-    /*public scale(String num, String p1, String p2, String lab, int nc, ArrayList<question> qs, ArrayList<Integer> ch){
-        subnum=num;
-        P1=p1;
-        P2=p2;
-        label=lab;
-        questions=qs;
-        choices = ch;
-        numChoices=nc;
-        choices = new ArrayList();
-        switchpoints = new ArrayList();
-        ratios = new ArrayList();
-        computeRnS();
-        computeWTRv2();
-        System.out.println(subnum + ":" + label + ", switchpoints size: " + switchpoints.size());
-    }*/
-    
-    public boolean checkScale(){
-        if((P1 != null) && (P2 != null) && (label != null) && /*(numChoices != null) &&*/ (questions != null) && (choices != null) && (switchpoints != null) && (ratios != null)){
-            try{
-                for (question q : questions)
-                    if (q.checkNull())
-                        return false;
-            }
-            catch(IllegalAccessException e)
-            {
-                //System.out.println(e);
+        if(P2.isEmpty()){
+            P2 = "P2unlabeled";
+            scaleValid = false;
+        }
+        if(label.isEmpty()){
+            label = "ScaleUnlabeled";
+            scaleValid = false;
+        }
+        if(numChoices==0){
+            numChoices = -1;
+            scaleValid = false;
+        }
+        if(numChoices!=questions.size()){
+            numChoices=-1;
+            scaleValid=false;
+        }
+        for(question q:questions){
+            if(q.questionValid){
+            } else {
+                scaleValid=false;
             }
         }
-        
-        return true;
     }
           
        
-    public void computeRnS(){ //compute ratios and switchpoints from questions
+    public final void computeRnS(){ //compute ratios and switchpoints from questions
         for(question q:questions){
             ratios.add(q.ratio);
         }
@@ -281,6 +236,6 @@ public class scale {
                 numSwitches++;
             }
         }
-        //System.out.println("Computed WTR="+WTR+", Consistency="+Consistency+", WTRerror="+WTRError);
+        System.out.println("Computed WTR="+WTR+", Consistency="+Consistency+", WTRerror="+WTRError);
     }
 }
