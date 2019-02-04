@@ -67,11 +67,11 @@ public class WTRAnalyzer {
        
        directoryField = new JTextField(20);
        directoryField.setFont(theFont);
-       directoryField.setText("C:\\Users\\Max\\Dropbox\\Harvard\\Research\\Java\\WTR-Analyzer\\WTR-analyzer\\WTR_analyzer2\\WTRData\\testingData.csv");
+       directoryField.setText("");
        directoryField.setMaximumSize(labelDimension);
        outputField = new JTextField(20);
        outputField.setFont(theFont);
-       outputField.setText("C:\\Users\\Max\\Dropbox\\Harvard\\Research\\Java\\WTR-Analyzer\\WTR-analyzer\\WTR_analyzer2\\WTRData\\testingData_results.csv");
+       outputField.setText("");
        outputField.setMaximumSize(labelDimension);
        directoryerror = new JTextArea(2,20);
        directoryerror.setFont(theFont);
