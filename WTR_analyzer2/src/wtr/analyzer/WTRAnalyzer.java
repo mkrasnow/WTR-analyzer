@@ -459,7 +459,7 @@ public class Go {
                         for (int j=0; j<thisScale.numChoices; j++){
                             writer.write("Choice_" + j+",");
                         }
-                        writer.write("Num_Avgd_SPs,Max_SP_Consistency,Avgd_SPs,Avgd_SP_range,Avgd_SP_rankRange,Num_Inconsistent,numSwitches_"+thisScale.label+",Consistency_,"+thisScale.label+",WTRerror_"+thisScale.label+",WTR_"+thisScale.label+",WTRLoc");
+                        writer.write("Num_Avgd_SPs,Max_SP_Consistency,Avgd_SPs,Avgd_SP_range,Avgd_SP_rankRange,Num_Inconsistent,numSwitches_"+thisScale.label+",Consistency_"+thisScale.label+",WTRerror_"+thisScale.label+",WTR_"+thisScale.label+",WTRLoc");
                     } else {
                         writer.write(",Scale Invalid - Check Datafile");
                     }
