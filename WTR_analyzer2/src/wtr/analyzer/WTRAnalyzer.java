@@ -249,6 +249,7 @@ public class Go {
         
             //Create array to store subjects
             ArrayList<Subject> subList = new ArrayList();
+            ArrayList<scale> theScales  = new ArrayList();
             
             //For each separate data file, analyze
             for(int i = 0; i<dirContents.size(); i++){
@@ -291,7 +292,7 @@ public class Go {
                         header.add(lineToAdd);
                     }
                     System.out.println("Successfully read header with "+header.size() + " lines");
-                    ArrayList<scale> theScales  = new ArrayList();
+                    //ArrayList<scale> theScales  = new ArrayList();
                     
                     ArrayList<ArrayList<String>> body = new ArrayList();
                     for(int j=11; j<lines.size(); j++){
@@ -360,6 +361,7 @@ public class Go {
                     //process the data
                     System.out.println(body.size()+" subjects' worth of data left in file");
                     for(ArrayList<String> row:body){
+                        //check if row is complete at this point??  row.size() should be a specific length knowable by theScales.size(), numQs & blanks
                         Subject thisSub = new Subject();
                         String subnum = row.get(0);
                         thisSub.SubNum=row.get(0);
@@ -370,19 +372,22 @@ public class Go {
                         } 
                         System.out.println("");
                         for(int k=0; k<theScales.size(); k++){
-                            //System.out.println("This happened");
+                            System.out.println("This happened");
                             //scale tempScale = theScales.get(k);
                             
                             scale tempScale = new scale(theScales.get(k).P1,theScales.get(k).P2,theScales.get(k).label,theScales.get(k).numChoices,theScales.get(k).questions); 
                             tempScale.scaleValid=theScales.get(k).scaleValid;
 
 
-                            System.out.println(tempScale.WTR+ " should be 0");
-                            System.out.println("The scale starts out with "+tempScale.choices.size()+" choices (should be 0)");
+                            //System.out.println(tempScale.WTR+ " should be 0");
+                            //System.out.println("The scale starts out with "+tempScale.choices.size()+" choices (should be 0); attempting to add "+tempScale.numChoices+" choices...");
                             for(int l=0; l<tempScale.numChoices; l++){
-                                if(row.get(l).equals("1")||row.get(l).equals("2")){
-                                    //System.out.println("Reading value of: " + subData.get(l));
-                                    tempScale.choices.add(Integer.parseInt(row.get(l)));
+                                if(row.size()>0){
+                                    if(row.get(l).equals("1")||row.get(l).equals("2")){
+                                        tempScale.choices.add(Integer.parseInt(row.get(l)));
+                                    } else {
+                                        tempScale.choicesComplete=false;
+                                    }
                                 } else {
                                     tempScale.choicesComplete=false;
                                 }
@@ -390,9 +395,12 @@ public class Go {
                             }
                             //System.out.println("Attempted to add " + tempScale.numChoices + " decisions");
                             for(int l=0; l<tempScale.numChoices; l++){
-                                //System.out.print("Scale "+ k+", removing value of: " + row.get(0)+ " from subject data string.....     ");
-                                row.remove(0);
-                                //System.out.println(" success");
+                                if(row.size()>0){
+                                    //System.out.print("Scale "+ k+", removing value of: " + row.get(0)+ " from subject data string.....     ");
+                                    row.remove(0);
+                                    //System.out.println(" success");
+                                } else { 
+                                }
                             }
                             if(row.isEmpty()){
                             } else {
@@ -415,7 +423,7 @@ public class Go {
                                 tempScale.numSwitches=99999;
                             }
                             thisSub.scales.add(tempScale);
-                            System.out.println("This subject now has "+thisSub.scales.size()+" scales processed");
+                            //System.out.println("This subject now has "+thisSub.scales.size()+" scales processed");
                         }
                         subList.add(thisSub);
                         /*for(Subject s:subList){
@@ -433,7 +441,7 @@ public class Go {
                     reader.close();
                     System.out.println("Closed file!");
                     } catch (Exception ex) {
-                    //ex.printStackTrace();
+                    ex.printStackTrace();
                     directoryerror.setText("Problem reading the files. Perhaps no files were selected");
                     theFrame.validate();
                 }
@@ -446,8 +454,8 @@ public class Go {
                 
                 //create a header row
                 writer.write("Subject");
-                for(int i=0; i<subList.get(0).scales.size(); i++){
-                    scale thisScale = subList.get(0).scales.get(i);
+                for(int i=0; i<theScales.size(); i++){
+                    scale thisScale = theScales.get(i);
                     if(thisScale.scaleValid){
                         writer.write(",Scale_Label,Player_1-Player_2,Scale_Length,");
                         for (int j=0; j<thisScale.ratios.size(); j++){
