@@ -23,7 +23,7 @@ public class question {
         pick1pay2=p1p2;
         pick2pay1=p2p1;
         pick2pay2=p2p2;
-        ratio = (p1p1-p2p1)/(p2p2-p2p1);
+        ratio = (p1p1-p2p1)/(p2p2-p1p2);
         questionValid=true;
         System.out.println("Qnum: " + num + ", ratio: "+ ratio);
     }
