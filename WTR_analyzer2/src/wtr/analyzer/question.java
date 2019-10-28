@@ -13,17 +13,17 @@ import java.lang.reflect.Field;
  */
 public class question {
     int num;
-    double pick1pay1, pick1pay2, pick2pay1, pick2pay2, ratio;
+    double choose1stake4player1, choose1stake4player2, choose2stake4player1, choose2stake4player2, ratio;
     boolean questionValid;
     
     //this is for valid questions
-    public question(int qn, double p1p1, double p1p2, double p2p1, double p2p2){
+    public question(int qn, double c1sp1, double c1sp2, double c2sp1, double c2sp2){
         num=qn;
-        pick1pay1=p1p1;
-        pick1pay2=p1p2;
-        pick2pay1=p2p1;
-        pick2pay2=p2p2;
-        ratio = (p1p1-p2p1)/(p2p2-p1p2);
+        choose1stake4player1=c1sp1;
+        choose1stake4player2=c1sp2;
+        choose2stake4player1=c2sp1;
+        choose2stake4player2=c2sp2;
+        ratio = (c1sp1-c2sp1)/(c2sp2-c1sp2);
         questionValid=true;
         System.out.println("Qnum: " + num + ", ratio: "+ ratio);
     }
