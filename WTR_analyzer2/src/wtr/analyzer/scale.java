@@ -137,9 +137,6 @@ public class scale {
         
         //reorder choices to match ratios 
         ArrayList<Integer> tempChoices = new ArrayList();
-        /*for(int i:SortedIndexes){
-            System.out.println(i);
-        }*/
         while(!SortedIndexes.isEmpty()){
             tempChoices.add(choices.get(SortedIndexes.get(0)));
             //System.out.println("Index of " + SortedIndexes.get(0) + " was choice of " + choices.get(SortedIndexes.get(0)));

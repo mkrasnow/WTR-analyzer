@@ -152,7 +152,10 @@ public class WTRAnalyzer {
             directory.setFileSelectionMode(2);
             directory.setDialogTitle("Select the directory to save to and enter a name.");
             directory.showSaveDialog(theFrame);
-            outputField.setText(directory.getSelectedFile().getPath());
+            try{
+                outputField.setText(directory.getSelectedFile().getPath());
+            } catch (java.lang.NullPointerException e){
+            }
             theFrame.repaint();
         }
     }
@@ -372,7 +375,7 @@ public class Go {
                         } 
                         System.out.println("");
                         for(int k=0; k<theScales.size(); k++){
-                            System.out.println("This happened");
+                            System.out.println("Flag 1");
                             //scale tempScale = theScales.get(k);
                             
                             scale tempScale = new scale(theScales.get(k).P1,theScales.get(k).P2,theScales.get(k).label,theScales.get(k).numChoices,theScales.get(k).questions); 
@@ -381,6 +384,7 @@ public class Go {
 
                             //System.out.println(tempScale.WTR+ " should be 0");
                             //System.out.println("The scale starts out with "+tempScale.choices.size()+" choices (should be 0); attempting to add "+tempScale.numChoices+" choices...");
+                            //I think this is where the problem happens with subject data with leading null!!!
                             for(int l=0; l<tempScale.numChoices; l++){
                                 if(row.size()>0){
                                     if(row.get(l).equals("1")||row.get(l).equals("2")){
@@ -402,13 +406,14 @@ public class Go {
                                 } else { 
                                 }
                             }
-                            if(row.isEmpty()){
-                            } else {
-                                if(row.get(0).equals("")){
-                                    row.remove(0);
+                            //what is going on here??? could this be how leading null choice breaks?
+                            //if(row.isEmpty()){
+                            //} else {
+                                //if(row.get(0).equals("")){
+                                    //row.remove(0);
                                     //System.out.println("Removed empty cell from data string");
-                                }
-                            }
+                                //}
+                            //}
                             if(tempScale.scaleValid&&tempScale.choicesComplete){
                                 tempScale.computeWTRv2();
                             }  else{
