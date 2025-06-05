@@ -107,18 +107,9 @@ public class scale {
             tempIndexes.remove(index);
         }
         ratios=tempRatios;
-        /*System.out.print("Sorted ratios:");
-        for(double r:ratios){
-            System.out.print(r + " ");
-        }
-        System.out.println();
-        System.out.print("Sorted Indexes:");
-        for(int i:SortedIndexes){
-            System.out.print(i + " ");
-        }
-        System.out.println();*/
+
       
-        //calculate switchpoitns from ratios (where 1st and last sp equal the 1st and last ratio, and the middle ratios are averages.
+        //calculate switchpoints from ratios (where 1st and last sp equal the 1st and last ratio, and the middle ratios are averages.
         switchpoints = new ArrayList();
         switchpoints.add(ratios.get(0));
         //System.out.print("Switchpoints are: "+ switchpoints.get(switchpoints.size()-1)+ ", ");
@@ -135,7 +126,7 @@ public class scale {
         MaxConsSPs = new ArrayList();
         MaxConsSPRanks = new ArrayList();
         
-        //reorder choices to match ratios 
+        //reorder choices to match sorted ratio order 
         ArrayList<Integer> tempChoices = new ArrayList();
         while(!SortedIndexes.isEmpty()){
             tempChoices.add(choices.get(SortedIndexes.get(0)));
@@ -143,7 +134,8 @@ public class scale {
             SortedIndexes.remove(0);
         }
         choices = tempChoices;
-        //calculate consistency of all possible switchpoints
+        
+//calculate consistency of all possible switchpoints
         for(int i=0; i<switchpoints.size(); i++){
             //create perfect choices for that switchpoint
             ArrayList<Integer>perfectChoices = new ArrayList();
@@ -153,6 +145,7 @@ public class scale {
                 } else {
                     perfectChoices.add(2);
                 }
+                //this makes the perfect choice for the lowest detectable WTR 1 (self)
                 if(Objects.equals(ratios.get(j), switchpoints.get(i))&&j==ratios.size()-1){
                     perfectChoices.remove(j);
                     perfectChoices.add(1);
@@ -167,12 +160,12 @@ public class scale {
                 }
             }
             ConsOfSP.add(localCC);
-            //System.out.print("Perfect for "+switchpoints.get(i)+" would be: ");
+            /*System.out.print("Perfect for "+switchpoints.get(i)+" would be: ");
             for(int s:perfectChoices){
-                //System.out.print(s+", ");
+                System.out.print(s+", ");
             }
-            //System.out.println(" and the consistency with that is: "+(double)((double)localCC/(double)ratios.size()));
-            
+            System.out.println(" and the consistency with that is: "+(double)((double)localCC/(double)ratios.size()));
+            */
         }
         
         //find highest consistency switchpoints and calculate WTR
@@ -186,7 +179,7 @@ public class scale {
                 TempWTR+=switchpoints.get(i);
             }
         }
-        SPrange=Collections.max(MaxConsSPs)-Collections.min(MaxConsSPs);
+        SPrange=(double)Collections.max(MaxConsSPs)-(double)Collections.min(MaxConsSPs);
         SPrankRange=Collections.max(MaxConsSPRanks)-Collections.min(MaxConsSPRanks);
         WTR=(double)TempWTR/(double)MaxConsSPs.size();
         //Consistency=(double)MaxC/(double)ratios.size();
@@ -233,6 +226,6 @@ public class scale {
                 numSwitches++;
             }
         }
-        System.out.println("Computed WTR="+WTR+", Consistency="+Consistency+", WTRerror="+WTRError);
+        System.out.println("Computed WTR="+WTR+", Consistency="+Consistency+", WTRerror="+WTRError +", numSwitches="+numSwitches);
     }
 }

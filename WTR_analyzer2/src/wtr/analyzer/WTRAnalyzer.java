@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.*;
@@ -382,8 +383,8 @@ public class Go {
                             tempScale.scaleValid=theScales.get(k).scaleValid;
 
 
-                            //System.out.println(tempScale.WTR+ " should be 0");
-                            //System.out.println("The scale starts out with "+tempScale.choices.size()+" choices (should be 0); attempting to add "+tempScale.numChoices+" choices...");
+                            System.out.println(tempScale.WTR+ " should be 0");
+                            System.out.println("The scale starts out with "+tempScale.choices.size()+" choices (should be 0); attempting to add "+tempScale.numChoices+" choices...");
                             //I think this is where the problem happens with subject data with leading null!!!
                             for(int l=0; l<tempScale.numChoices; l++){
                                 if(row.size()>0){
@@ -406,14 +407,13 @@ public class Go {
                                 } else { 
                                 }
                             }
-                            //what is going on here??? could this be how leading null choice breaks?
-                            //if(row.isEmpty()){
+                            /*if(row.isEmpty()){
                             //} else {
                                 //if(row.get(0).equals("")){
                                     //row.remove(0);
                                     //System.out.println("Removed empty cell from data string");
                                 //}
-                            //}
+                            }*/
                             if(tempScale.scaleValid&&tempScale.choicesComplete){
                                 tempScale.computeWTRv2();
                             }  else{
@@ -472,7 +472,7 @@ public class Go {
                         for (int j=0; j<thisScale.numChoices; j++){
                             writer.write("Choice_" + j+",");
                         }
-                        writer.write("Num_Avgd_SPs,Max_SP_Consistency,Avgd_SPs,Avgd_SP_range,Avgd_SP_rankRange,Num_Inconsistent,numSwitches_"+thisScale.label+",Consistency_"+thisScale.label+",WTRerror_"+thisScale.label+",WTR_"+thisScale.label+",WTRLoc");
+                        writer.write(thisScale.label+"_numSwitches,"+thisScale.label+"_numHighestConstSPs,"+thisScale.label+"_highestConstValue,"+thisScale.label+"_averagedSPs,"+thisScale.label+"_WTRSpanBtwnAvgdSPs,"+thisScale.label+"_rankSpanBtwnAvgdSPs,"+thisScale.label+"_numDeviations,"+thisScale.label+"_Consistency,"+thisScale.label+"_WTRerror,"+thisScale.label+"_WTR,"+thisScale.label+"_WTRLoc");
                     } else {
                         writer.write(",Scale Invalid - Check Datafile");
                     }
@@ -485,6 +485,7 @@ public class Go {
                     Subject sub = subList.get(i);
                     subdata = sub.SubNum;
                     System.out.println(sub.SubNum + " has " + sub.scales.size() + " scales");
+                    DecimalFormat df = new DecimalFormat("0.000");
                     for(int j=0; j<sub.scales.size(); j++){
                         scale thisScale=sub.scales.get(j);
                         if(!thisScale.scaleValid){
@@ -494,10 +495,10 @@ public class Go {
                             subdata+=thisScale.P1+":"+sub.scales.get(j).P2+",";
                             subdata+=thisScale.ratios.size()+",";
                             for (int k=0; k<thisScale.ratios.size(); k++){
-                                subdata+=thisScale.ratios.get(k)+",";
+                                subdata+=df.format(thisScale.ratios.get(k))+",";
                             }
                             for (int k=0; k<thisScale.switchpoints.size(); k++){
-                                subdata+=thisScale.switchpoints.get(k)+",";
+                                subdata+=df.format(thisScale.switchpoints.get(k))+",";
                             }
                             
                             if(!thisScale.choicesComplete){
@@ -511,18 +512,18 @@ public class Go {
                                 }
                                 subdata+=thisScale.numSwitches+",";
                                 subdata+=thisScale.MaxConsSPs.size()+",";
-                                subdata+=thisScale.maxConsistency+",";
+                                subdata+=df.format(thisScale.maxConsistency)+",";
                                 String sps="";
                                 for (int k=0; k<thisScale.MaxConsSPs.size(); k++){
-                                    sps+=thisScale.MaxConsSPs.get(k)+";";
+                                    sps+=df.format(thisScale.MaxConsSPs.get(k))+";";
                                 }
                                 subdata+=sps.substring(0, sps.length()-2)+",";
-                                subdata+=thisScale.SPrange+",";
+                                subdata+=df.format(thisScale.SPrange)+",";
                                 subdata+=thisScale.SPrankRange+",";
                                 subdata+=thisScale.numIncChoices+",";
-                                subdata+=thisScale.Consistency+",";
-                                subdata+=thisScale.WTRError+",";
-                                subdata+=thisScale.WTR+",";
+                                subdata+=df.format(thisScale.Consistency)+",";
+                                subdata+=df.format(thisScale.WTRError)+",";
+                                subdata+=df.format(thisScale.WTR)+",";
                                 subdata+=thisScale.WTRLoc;
                             }
                         }
