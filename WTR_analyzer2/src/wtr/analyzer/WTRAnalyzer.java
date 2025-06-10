@@ -407,13 +407,13 @@ public class Go {
                                 } else { 
                                 }
                             }
-                            /*if(row.isEmpty()){
-                            //} else {
-                                //if(row.get(0).equals("")){
-                                    //row.remove(0);
-                                    //System.out.println("Removed empty cell from data string");
-                                //}
-                            }*/
+                            if(row.isEmpty()){
+                            } else {
+                                if(row.get(0).equals("")){
+                                    row.remove(0);
+                                    System.out.println("Removed empty cell from data string");
+                                }
+                            }
                             if(tempScale.scaleValid&&tempScale.choicesComplete){
                                 tempScale.computeWTRv2();
                             }  else{
